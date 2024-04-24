@@ -1,0 +1,31 @@
+#include<sys/types.h>
+#include<sys/socket.h>
+
+/*
+*   UDP数据读写
+*ssize_t recvfrom(int sockfd,void*buf,size_t len,int flags,struct
+sockaddr*src_addr,socklen_t*addrlen);
+*ssize_t sendto(int sockfd,const void*buf,size_t len,int
+flags,const struct sockaddr*dest_addr,socklen_t addrlen);
+
+*/
+/*
+通用数据读写函数
+socket编程接口还提供了一对通用的数据读写系统调用。它们不仅
+能用于TCP流数据，也能用于UDP数据报：
+#include＜sys/socket.h＞
+ssize_t recvmsg(int sockfd,struct msghdr*msg,int flags);
+ssize_t sendmsg(int sockfd,struct msghdr*msg,int flags);
+*/
+// struct msghdr
+// {
+// void*msg_name;/*socket地址*/
+// socklen_t msg_namelen;/*socket地址的长度*/
+// struct iovec*msg_iov;/*分散的内存块*/
+// int msg_iovlen;/*分散内存块的数量*/
+// void*msg_control;/*指向辅助数据的起始位置*/
+// socklen_t msg_controllen;/*辅助数据的大小*/
+// int msg_flags;/*复制函数中的flags参数，并在调用过程中更新*/
+// };
+
+
