@@ -145,12 +145,12 @@ void WebServer::adjust_timer(heap_timer *&timer)
     utils.m_timer_heap.adjust_timer(timer);
     LOG_INFO("%s", "adjust timer once");
 }
-
+//超时处理定时器
 void WebServer::deal_timer(heap_timer *timer,int sockfd)
 {
-    timer->cb_func(&users_timer[sockfd]);
-    if(timer)
+     if(timer)
     {
+        timer->cb_func(&users_timer[sockfd]);
         utils.m_timer_heap.del_timer(timer);
     }
      LOG_INFO("close fd %d", users_timer[sockfd].sockfd);
@@ -221,7 +221,7 @@ bool WebServer::dealwithsignal(bool &timeout,bool &stop_server)
 
 void WebServer::dealwithread(int sockfd)
 {
-    heap_timer *timer=users_timer[sockfd].timer;
+    heap_timer *&timer=users_timer[sockfd].timer;
      //reactor
     if (1 == m_actormodel)
     {
@@ -268,7 +268,7 @@ void WebServer::dealwithread(int sockfd)
 
 void WebServer::dealwithwrite(int sockfd)
 {
-    heap_timer *timer = users_timer[sockfd].timer;
+    heap_timer *&timer = users_timer[sockfd].timer;
     //reactor
     if (1 == m_actormodel)
     {
@@ -339,7 +339,7 @@ void WebServer::eventLoop()
              else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
             {
                 //服务器端关闭连接，移除对应的定时器
-                heap_timer *timer = users_timer[sockfd].timer;
+                heap_timer *&timer = users_timer[sockfd].timer;
                 deal_timer(timer, sockfd);
             }
               //处理信号

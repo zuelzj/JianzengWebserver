@@ -83,11 +83,11 @@ void modfd(int epollfd, int fd, int ev)
     event.data.fd = fd;
 
 #ifdef ET
-    event.events = EPOLLIN | EPOLLET | EPOLLRDHUP;
+    event.events = ev | EPOLLONESHOT | EPOLLET | EPOLLRDHUP;
 #endif
 // ET模式 收到需立即处理完成 //EPOLLONESHOT 只接受一次触发事件，触发完后需要复位防止多线程响应一个socket
 #ifdef LT
-    event.events = EPOLLIN | EPOLLRDHUP;
+    event.events = ev | EPOLLONESHOT | EPOLLRDHUP;
 #endif
 
     epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
@@ -234,7 +234,7 @@ bool http_conn::read()
 /*解析HTTP请求行，获得请求方法、目标RTL 以及HTTP版本号*/
 http_conn::HTTP_CODE http_conn::parse_request_line(char *text)
 { // 示例：   GET /index.html HTTP/1.1
-    m_url = strpbrk(text, "\t");
+    m_url = strpbrk(text, " \t");
     /*如果请求行中没有空白字符或“\t”字符，则HTTP请求必有问题*/
     if (!m_url)
     {
@@ -255,14 +255,14 @@ http_conn::HTTP_CODE http_conn::parse_request_line(char *text)
     {
         return BAD_REQUEST;
     }
-    m_url += strspn(m_url, "\t"); // 除去tab
-    m_version = strpbrk(m_url, "\t");
+    m_url += strspn(m_url, " \t"); // 除去其余连续开头tab和空格
+    m_version = strpbrk(m_url, " \t");
     if (!m_version)
     {
         return BAD_REQUEST;
     }
     *m_version++ = '\0';
-    m_version += strspn(m_version, "\t");
+    m_version += strspn(m_version, " \t");
     if (strcasecmp(m_version, "HTTP/1.1") != 0)
     {
         return BAD_REQUEST;
@@ -550,7 +550,7 @@ bool http_conn::write()
 
     if (bytes_to_send == 0) /*没有要写的数据*/
     {
-        modfd(m_epollfd, m_sockfd, EPOLLIN);
+        modfd(m_epollfd, m_sockfd, EPOLLIN); //注册下一次读事件
         init();
         return true;
     }

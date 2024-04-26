@@ -10,8 +10,8 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-/*每个客户链接不停的向服务器发送请求*/
-static const char *request = "GET http://localhost/index.html HTTP/1.1\r\nConnection:keep-alive\r\n\r\nxxxxxxxxxxxx";
+/*每个客户链接不停的向服务器发送请求*/  //http://localhost/index.html
+static const char *request = "GET / HTTP/1.1\r\nConnection:keep-alive\r\n\r\nxxxxxxxxxxxx";
 int setnonblocking(int fd)
 {
     int old_option = fcntl(fd, F_GETFL);
@@ -78,11 +78,11 @@ void start_conn(int epoll_fd, int num, const char *ip, int port)
     struct sockaddr_in address;
     bzero(&address, sizeof(address));
     address.sin_family = AF_INET;
-    inet_pton(AF_INET, ip, &address.sin_addr);
+    inet_pton(AF_INET, ip, &address.sin_addr);//127.0.0.1
     address.sin_port = htons(port);
     for (int i = 0; i < num; ++i)
     {
-        sleep(1);
+        // sleep(1);
         int sockfd = socket(PF_INET, SOCK_STREAM, 0);
         printf("create 1 sock\n");
         if (sockfd < 0)

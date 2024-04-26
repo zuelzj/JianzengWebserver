@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/code/server",
             "args": [], //输入参数
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "/home/zj/Desktop/myWeb/JianzengWebserver/code",//${fileDirname}
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
