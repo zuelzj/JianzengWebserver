@@ -3,8 +3,8 @@
 
 
 const int port=9006;
-const int log_write=0;//日志写入方式,默认同步
-const int opt_linger=0;//优雅关闭链接
+const int log_write=1;//日志写入方式,默认异步
+const int opt_linger=0;//优雅关闭链接，断开链接仍然会发送最后一次数据
 const int sql_num=8;//数据库连接池内部数量
 const int thread_num=1;//线程池内部线程数量
 const int close_log=1;//关闭日志
